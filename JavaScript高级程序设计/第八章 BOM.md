@@ -5,7 +5,6 @@
     全局作用域中声明的变量，函数都会变成window对象的属性和方法。
 
 定义在全局变量和window对象上直接定义属性的不同：
-    
     全局变量不能通过delete操作符删除（原因：configurable为false）
 
 #### 8.1.2 窗口关系及框架（感觉不常用）
@@ -150,6 +149,7 @@ function getQueryStringArgs(){
 
 ###### 2.location.replace（）
 
+    参数:浏览器要跳转的URL
     浏览器不会在历史记录中生成新记录，在调用replace（）方法后，用户不能回到前一个页面
 
 ###### 2.location.reload（）
@@ -157,14 +157,14 @@ function getQueryStringArgs(){
 
 
 ​    
-## 8.2 navigator对象
+## 8.3 navigator对象
 
-## 8.3 screen对象
+## 8.4 screen对象
 
-## 8.3 history对象
-hisotry.go() 
+## 8.5 history对象
+`hisotry.go() `
     接收一个参数，+前 -向后
     如果是网址则跳到最近包含此网站的页面（不论向前向后）
     
-hisotry.back() 向前一页
-hisotry.forward()   向后一页
+`hisotry.back() `向前一页
+`hisotry.forward()  ` 向后一页

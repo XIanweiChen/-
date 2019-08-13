@@ -84,12 +84,15 @@ Document节点具有以下特征：
 
 1.document.title
     
+
     可通过修改此属性改变页面标题
 2.document.URL
     
+
     完整的URL
 3.document.domain
     
+
     获取域名，可通过将每个页面的document.domain设置相同的值麦克写页面皆可以互相访问对方包含的JavaScript对象了    
     完整的URL
 4.document.referrer
@@ -103,6 +106,7 @@ Document节点具有以下特征：
 1.getElementById()
 2.getElementsByTagName()
     
+
     1.返回一个NodeList，在HTML文档中是HTMLCollection对象（与NodeList十分相似）
     2.此方法有一个namedItem（）的方法，可通过name特性获取集合中发项(也可通过[ ])
 3.getElementsByName()   HTMLDocument独有
@@ -123,11 +127,13 @@ Document节点具有以下特征：
     write（）：原样写入
     writeln（）：在字符串末尾加上\n
     open()和close()分别用于打开和关闭网页的输出流
-**1.如果在文档加载结束后在调用document.write（）输出的内容将会重写整个页面
-2. 可动态包含外部资源，如js脚本**
-  
+-  **如果在文档加载结束后在调用document.write（）输出的内容将会重写整个页面**
+
+-  **可动态包含外部资源，如js脚本**
+
+
 #### 10.1.3 Element类型
-Element节点具有一下特征：
+Element节点具有以下特征：
     
     1.nodeType的值为1
     2.nodeName的值为元素的标签名
@@ -157,6 +163,7 @@ HTMLElement类型直接继承自Element并添加了一些属性
 div.setAttribute("id","someid")
 **removeAttribute()**
 彻底删除元素的特性
+
 ###### 4.attributes属性
 Element类型是使用attributes属性的唯一一个DOM节点
 
@@ -293,7 +300,7 @@ Attr对象有三个属性：
 		try{
 			script.appendChild(document.createTextNode(code));
 		}
-		catch{
+		catch{  //如果代码出错说明是IE,只能用text属性
 			script.text = code;
 		}
 		document.body.appendChild(script);	

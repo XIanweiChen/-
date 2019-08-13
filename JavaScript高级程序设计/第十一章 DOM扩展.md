@@ -10,7 +10,7 @@
     不同浏览器的函数不同  
 
 
-## 11.2 元素遍历
+## 11.2 元素遍历 ⭐️
 Element Traversal API为DOM元素添加了以下5个属性：
 
     1.childElementCount:返回子元素(不包括文本节点和注释)的个数。
