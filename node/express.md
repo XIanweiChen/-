@@ -220,7 +220,7 @@ indexRouter(app); //将app这个express实例传入router.js,使router.js能使�
 ```js
 //rounter.js
 
-module.exports = function(app){   //导出这个function
+module.exports = function (app){   //导出这个function
   
   /* GET home page. */
   app.get('/', function(req, res, next) {
@@ -473,7 +473,7 @@ app.get('/user/:id', function (req, res, next) {
 
 **next传参数直接到最后那个错误处理的中间件（err就是next函数传入的值）**
 
-当传入4个参数时就是处理错误的中间件，放在所有的最下方
+当传入4个参数时就是处理错误的中间件，放在所有的最下方 
 
 ```js
 // error handler
@@ -545,3 +545,4 @@ app.use(static('./node_modules'))
 app.use('/public', static('./public'))
 app.use('/node_modules', static('./node_modules'))
 ```
+

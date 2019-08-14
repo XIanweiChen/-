@@ -6,7 +6,7 @@ function scope
 `2.const and let `: 
 
 1. block scope 
-2. 不可可重复申明 
+2. 不可重复申明 
 3. 可代替立即执行函数:
 
 ```javascript
@@ -22,7 +22,7 @@ function scope
 console.log(color)
 var color = 'yellow'
 ```
-存在var存在变量提升，所以结果为undefined
+var存在变量提升，所以结果为undefined
     
 
 ```javascript
@@ -40,7 +40,7 @@ const greet =name=>name;
 // 箭头函数中的this在定义的时候就被指定（指向父级的作用域），而且在以后也不会改变
 var xich = {
     name:"xich",
-    hobby:["coding","sleeping","gaming"],
+    hobby:["singing","dancing","rap"],
     showHobbies:function(){
 this.hobby.map((hobby)=>{                        
     console.log(`${this.name} loves ${hobby}`);
@@ -149,10 +149,10 @@ xich.showHobbies()
 
 ###### 静态方法
 
-1. Array.from()：
+1. Array.from(arrayLike[, mapFn[, thisArg]])：
 
    1. 可转换aruguments等数组
-   2. 参数2自带map
+   2. 参数2自带map 
 
 2. Array.of()：
 
@@ -165,7 +165,7 @@ xich.showHobbies()
 		{name:'apples',quanlity:2},
 		{name:'bananas',quanlity:0},
 		{name:'cherries',quanlity:5}
-		];
+		]; 
 
 		//.find()  三个参数item,index,array 只返回找到的第一个
 		const bananas = inventory.find(fruit=>fruit.name ==='bananas');
@@ -275,7 +275,6 @@ const cxw = {
 	[key.shift()]:value.shift(),
 	[key.shift()]:value.shift(),
 	[key.shift()]:value.shift(),
-	['usr'+(++id)]:1
 }
 ```
 #### Promise
@@ -578,7 +577,7 @@ extends
    		}
 ```
 
-
+#### Proxy
 
 
 ```javascript

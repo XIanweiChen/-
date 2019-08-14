@@ -45,7 +45,7 @@ this.setState((state, props) => ({
 
   ![](/Users/ccc/Desktop/20170926220454438.jpg)
 
-  当出现节点跨层级移动时，并不会出现想象中的移动操作，而是会进行删除，重新创建的动作，这是一种很影响`React`性能的操作。因此官方也不建议进行DOM节点跨层级的操作。
+  当出现节点跨层级移动时，并不会出现想象中的移动操作，而是会进行删除，重新创建的动作，这是一种很影响`React`性能的操作。因此官方也**<u>不建议进行DOM节点跨层级的操作</u>**。
 
 * component diff:在每一层中，组件级别的对比
 
@@ -138,9 +138,10 @@ resolve:{
 ```
 
 **2.在create-react-app中**
-**其实太为你规定的很好.css的不模块化，.module.css的才模块化，很方便**
+**其实他为你规定的很好.css的不模块化，.module.css的才模块化，很方便**
 把css文件前缀为.module.css
 源码：
+
 ```javascript
 const cssModuleRegex = /\.module\.css$/;
 {
@@ -177,7 +178,7 @@ const cssModuleRegex = /\.module\.css$/;
     test: /\.js$/,
     exclude: /(node_modules|bower_components)/,
     use: ['babel-loader']
-  }
+  } 
 ```
 
 
@@ -269,7 +270,7 @@ export default class Counter extends React.Component{
         )
         //在return之后虚拟DOM创建好了，但仍未挂载
     }
-    componentDidMount(){//已经挂在，有可见的DOM元素
+    componentDidMount(){//已经挂载，有可见的DOM元素
         console.log(document.getElementById('myh3'));  //此时可操作DOM元素
     }
 
@@ -281,13 +282,13 @@ export default class Counter extends React.Component{
         return nextState.count%2 === 0 ? true:false;  //实现双数跟新
     }
 
-    componentWillUpdate(){
+    componentWillUpdate(nextProps, nextState){
         //此时DOM节点中的元素都是旧的
     }
 
     //调用render（）函数
 
-    componentDidUpdate(){
+    componentDidUpdate(prevProps, prevState, snapshot){
         console.log(this.refs.h3.innerHTML)
     }
 }
@@ -323,7 +324,7 @@ hdclick=()=>{
 ```
 Maximum update depth exceeded. This can happen when a component repeatedly calls setState inside componentWillUpdate or componentDidUpdate. React limits the number of nested updates to prevent infinite loops.
 ```
-改成this.hdclick就可解决，coClick只能传function
+改成this.hdclick就可解决，onClick只能传function
 
 
 #### context
@@ -341,7 +342,7 @@ export default class App extends React.Component {
         // 无论多深，任何组件都能读取这个值。
         // 在这个例子中，我们将 “dark” 作为当前的值传递下去。
         return (
-            <ThemeContext.Provider value="dark">
+            <ThemeContext.Provider value="dark">  //
                 <Toolbar />
             </ThemeContext.Provider>
         );
