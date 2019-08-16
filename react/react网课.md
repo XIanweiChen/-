@@ -5,7 +5,7 @@
 * JSX中必须有一个根元素
 * 组件首字母名称必须大写
 * props是只读的 state是可读可写
-* 直接修改state不会重新渲染组件
+* 直接修改state不会重新渲染组件 
 * 只用setState改变才会触发页面跟新
 * 因为 this.props 和 this.state 可能会异步更新，所以你不要依赖他们的值来更新下一个状态：要解决这个问题，可以让 setState() 接收一个函数而不是一个对象。这个函数用上一个 state 作为第一个参数，将此次更新被应用时的 props 做为第二个参数：
 ```JavaScript
@@ -234,6 +234,9 @@ const cssModuleRegex = /\.module\.css$/;
 **tips:只能在构造函数中直接为 this.state 赋值。如需在其他方法中赋值，你应使用 this.setState() 替代**
 
 #### 生命周期函数详解
+
+![](/Users/ccc/Desktop/屏幕快照 2019-07-22 下午4.35.15.png)
+
 ```javascript
 import React from 'react';
 export default class Counter extends React.Component{

@@ -2,8 +2,10 @@
 
 #### var let const
 `1.var `: 
-function scope
-`2.const and let `: 
+
+- `var`声明可以在包含它的函数，模块，命名空间或全局作用域内部任何位置被访问
+- function scope
+  `2.const and let `: 
 
 1. block scope 
 2. 不可重复申明 

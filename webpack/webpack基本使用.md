@@ -6,6 +6,10 @@ https://www.jianshu.com/p/fe82a3107967
 
 
 
+**output.publicpath**:在运行时对urls的引用加上publicpath(The value of the option is prefixed to every URL created by the runtime or loaders)
+
+sourcemap:记录压缩前后的位置,当产生错误时直接定位到未压缩前的位置，将大大的方便我们调试。
+
 
 
 ### 1.1.webpack运行机制概述
