@@ -1,5 +1,7 @@
 ### reducer
 
+reducer是一个function,state储存对象,action是传入的动作
+
 ```js
 //counterReducer
 const counterReducer = (state = { count: 1, name: 'cxw' }, action) => {
@@ -35,7 +37,9 @@ const nameReducer = (state = {}, action) => {
 export default nameReducer;
 ```
 
-合并reduce
+**合并reduce**
+
+combineReducers
 
 ```js
 //rootReducer
@@ -82,6 +86,8 @@ export const getName = async (dispatch)=>{
 
 ### store
 
+**createStore, compose, applyMiddleware**
+
 ```js
 
 import { createStore, compose, applyMiddleware } from 'redux';
@@ -90,10 +96,10 @@ import thunk from 'redux-thunk';  //用于加载异步的中间件
 import rootReducer from './reducers/rootReducer'
 
 const store = createStore(rootReducer,
-    compose(compose(applyMiddleware(thunk)),  //redux-thunk配置
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())  //redux-dev配置
+    compose(
+  	applyMiddleware(thunk),
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())  //整个storage
 )
-
 export default store;
 ```
 

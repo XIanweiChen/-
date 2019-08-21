@@ -13,7 +13,6 @@
 ```javascript 
 handleSubmit = e => {
   e.preventDefault();
-  console.log(this.refs.ctime);
   this.props.form.validateFieldsAndScroll((err, values) => {  //与 validateFields 相似，但校验完后，如果校验不通过的菜单域不在可见范围内，则自动滚动进可见范围
     if (!err) {
       console.log('Received values of form: ', values);
@@ -37,27 +36,29 @@ handleSubmit = e => {
 **注意：一个 Form.Item 建议只放一个被 getFieldDecorator 装饰过的 child，当有多个被装饰过的 child 时，`help` `required` `validateStatus`无法自动生成**
 
 ```javascript
-      
-render(){
-  	 const { getFieldDecorator } = this.props.form;
-  return(
-    <Form.Item label="E-mail">
-    {getFieldDecorator('email', {  //getFieldDecorator用于数据的双向绑定
-    rules: [  //rules是验证规则
-    {
-    type: 'email',
-    message: 'The input is not valid E-mail!',
-    },
-    {
-      required: true,
-        message: 'Please input your E-mail!',
-    },
-      ],
-    })(<Input />)}
-      </Form.Item>
-  )
-}
+    render() {
+        const { getFieldDecorator } = this.props.form;
+        return (
+            <Form onSubmit={this.handleSubmit.bind(this)}>
 
+                <Form.Item label="E-mail">
+                    {getFieldDecorator('email', {  //getFieldDecorator用于数据的双向绑定
+                        rules: [  //rules是验证规则
+                            {
+                                type: 'email',
+                                message: 'The input is not valid E-mail!',
+                            },
+                            {
+                                required: true,
+                                message: 'Please input your E-mail!',
+                            },
+                        ],
+                    })(<Input />)}
+                </Form.Item>
+
+            </Form>
+        )
+    }
 ```
 
 5.自定义验证

@@ -131,7 +131,6 @@ webpack增量编译机制会观察每次编译时的变更文件，在默认情�
 #### `compiler` 钩子    [文档](https://www.webpackjs.com/api/compiler-hooks/)
 
 `Compiler` 模块是 `webpack` 的支柱引擎，它通过 [CLI](https://links.jianshu.com/go?to=https%3A%2F%2Fwww.webpackjs.com%2Fapi%2Fcli) 或 [Node API](https://links.jianshu.com/go?to=https%3A%2F%2Fwww.webpackjs.com%2Fapi%2Fnode) 传递的所有选项，创建出一个 `compilation` 实例。它扩展(`extend`)自 `Tapable` 类，以便注册和调用插件。大多数面向用户的插件首，会先在 `Compiler`上注册。
-作者：nimw链接：https://www.jianshu.com/p/fe82a3107967来源：简书简书著作权归作者所有，任何形式的转载都请联系作者获得授权并注明出处。
 
 #### `compilation` 钩子  
 

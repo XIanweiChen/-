@@ -1,3 +1,11 @@
+ [code]( /Users/ccc/Desktop/大学/大三上/web/html/webpack-demo/wp2 ) 
+
+
+
+Tips:
+
+里面的导入都是用到`const xxx = require('xxx')`
+
 ### 1.npm init 
 
 `npm init `
@@ -157,6 +165,7 @@ npm i html-webpack-plugin -D
 配置：
 
 ```js
+const HtmlWebpackPlugin = require ('html-webpack-plugin');
 const htmlPlugin = new HtmlWebpackPlugin({
     template:path.join(__dirname,'public','index.html'), //源文件(不写默认生成)
     title:'index'
@@ -170,6 +179,33 @@ const htmlPlugin = new HtmlWebpackPlugin({
 功能：
 
 ​	自动清理dist文件夹
+
+配置:
+
+```js
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+ 
+const webpackConfig = {
+    plugins: [
+        /**
+         * All files inside webpack's output.path directory will be removed once, but the
+         * directory itself will not be. If using webpack 4+'s default configuration,
+         * everything under <PROJECT_DIR>/dist/ will be removed.
+         * Use cleanOnceBeforeBuildPatterns to override this behavior.
+         *
+         * During rebuilds, all webpack assets that are not used anymore
+         * will be removed automatically.
+         *
+         * See `Options and Defaults` for information
+         */
+        new CleanWebpackPlugin(),
+    ],
+};
+ 
+module.exports = webpackConfig;
+```
+
+
 
 ##### webpack-dev-server：
 
@@ -229,17 +265,21 @@ npm i @babel/plugin-proposal-object-rest-spread @babel/plugin-transform-runtime 
 配置：
 
 ```js
-{
-test: /\.js$/,
-  exclude: /(node_modules|bower_components)/,
-    use: {
-      loader: 'babel-loader',
-        options: {  //在这里的option 和 在 .babelrc设置时一样的
-          presets: ['@babel/preset-env',"@babel/preset-react"],
-            plugins:['@babel/plugin-proposal-object-rest-spread','@babel/plugin-transform-runtime','@babel/plugin-proposal-class-properties']
-        }
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                exclude: /(node_modules|bower_components)/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env', "@babel/preset-react"],
+                        plugins: ['@babel/plugin-proposal-object-rest-spread', '@babel/plugin-transform-runtime', '@babel/plugin-proposal-class-properties']
+                    }
+                }
+            }
+        ]
     }
-}
 ```
 
 #### 加载css
@@ -278,3 +318,62 @@ npm install --save-dev file-loader
 
 
 至此基本上可以向create-react-app一样使用了
+
+
+
+
+
+### 总体的webpack.config.js:
+
+```js
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+
+const htmlPlugin = new HtmlWebpackPlugin({
+    template: path.join(__dirname, 'public', 'index.html'), //源文件
+    title: 'index'
+})
+
+module.exports = {
+    mode: 'development',
+    plugins: [htmlPlugin],
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                exclude: /(node_modules|bower_components)/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env', "@babel/preset-react"],
+                        plugins: ['@babel/plugin-proposal-object-rest-spread', '@babel/plugin-transform-runtime', '@babel/plugin-proposal-class-properties']
+                    }
+                }
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    'style-loader',
+                    'css-loader'
+                ]
+            },
+            {
+                test: /\.(png|svg|jpg|gif)$/,
+                use: [
+                    'file-loader'
+                ]
+            }
+        ]
+    },
+    resolve:{
+        extensions:['.js','jsx'],
+        alias:{
+            '@':path.join(__dirname,'./src'),
+        }
+    }
+
+}
+
+```
+
