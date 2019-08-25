@@ -201,6 +201,16 @@ xich.showHobbies()
 	const bananas2 = inventory.myfind(fruit=>fruit.name ==='bananas');
 	const bananasIndex2 = inventory.myfindIndex(fruit=>fruit.name ==='bananas');
 ```
+###### 除此之外常用的方法:
+
+1. [Array.prototype.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)
+
+2. [Array.prototype.reverse()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse)
+
+3. [ Array.prototype.includes()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes)
+
+4. [Array.prototype.flat() ](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat)  return A new array with the sub-array elements concatenated into it.
+
 #### 剩余参数
 
  ```javascript
@@ -621,11 +631,125 @@ var person = new Proxy(target, {
 
 ```javascript
 	const color = new Set(); //不能用索引获取值，自动去重
-	color.add('red');
+	color.add('red');   //add添加元素  自动去重
 	color.add(5);
 	color.add("5");
-
 	console.log(color)
+
+  console.log(color.has(5))  //true   //判断是否存在
+  color.size  // 3 长度
+  color.delete(5)  //true   删除
+
+	color.clear()  //删全部
+
+```
+
+##### 遍历
+
+1.forEach
+
+2.for  of
+
+3.`color.keys() `or  `color.values()`   返回一个遍历器
+
+##### 数组去重:
+
+```js
+let ary = [1,3,1,2,3,1,2,4,1,8]
+let newAry = [...new Set(ary)]
+console.log(ary,newAry)
+```
+
+#### WeakSet
+
+##### 与set区别
+
+- 元素只能是对象
+- 不能用for of
+- 没有clear()
+
+##### 解决内存泄漏
+
+有点奇怪 这里
+
+```js
+let lily = {name:'lily',age:20}
+let weakAry = new WeakSet([lily])
+console.log(weakAry)
+lily = null 
+console.log(weakAry)
 ```
 
 
+
+### Map
+
+**key可以是任意类型**
+
+```js
+let myMap = new Map([['name',1]])
+```
+
+set
+
+get
+
+Size
+
+Has
+
+clear
+
+delete
+
+forEach
+
+##### 应用:
+
+存储关于某个对象的信息
+
+```html
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8'>
+		
+		
+	</head>
+	<body>
+		<button>🌹</button>
+		<button>🐟</button>
+		<button>✈️</button>
+		<button>😊</button>
+		<button>💗</button>
+		
+
+		<script type="text/javascript">
+			let button = document.querySelectorAll('button');
+			let btMap = new Map()
+			button.forEach(item=>{
+				btMap.set(item,0);
+				item.addEventListener('click',function(){
+					console.log(this)
+					let count = btMap.get(item);
+					btMap.set(this,count+1) 
+					console.log(btMap)
+				})
+			})
+		</script>
+	</body>
+</html>
+```
+
+
+
+### WeakMap
+
+**自动垃圾回收**
+
+不同:
+
+- 没有size
+- 不能循环
+- 没clear
+- key必须是对象

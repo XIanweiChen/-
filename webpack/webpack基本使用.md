@@ -184,7 +184,7 @@ plugins:[new myPlugin('ndnaisd')]
 
 
 
-##### 使用compiler的plugin
+#### 使用compiler的plugin
 
 ```js
 class CopyRightWebpackPlugin {

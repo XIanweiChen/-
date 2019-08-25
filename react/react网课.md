@@ -391,11 +391,15 @@ class ThemedButton extends React.Component {
 1.创建一个context:
 ` const ThemeContext = React.createContext('light');`
 
-2.在想要使用context 的组件中初始化context **(声明一个contextType的静态属性 固定名称**
+2.提供给子组件
+
+`<ThemeContext.Provider value="dark"> </ThemeContext.Provider>`
+
+3.在想要使用context 的组件中初始化context **(声明一个contextType的静态属性 固定名称**
    ` static contextType = ThemeContext;` 
    or
    `ThemedButton.contextType = ThemeContext;`
-3.使用context
+4.使用context
     
 
 **显示方法1 : this.context** 
@@ -412,6 +416,12 @@ class ThemedButton extends React.Component {
 > **官网**：https://reacttraining.com/react-router/
 
 **安装:** `npm install react-router-dom`
+
+导入:
+
+```js
+import { BrowserRouter as Router, Route, Link, Redirect, Switch } from "react-router-dom";
+```
 
 路由默认是不精确匹配，加上`exact`变成精确匹配
 `<Route path="/users/" component={Users} exact />`

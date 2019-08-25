@@ -20,6 +20,16 @@ tsc --init
 
 终端—>运行任务—>监视tsconfig.json
 
+### 在react-react-app中使用typescript
+
+刚刚创建:
+
+`npx create-react-app my-app --typescript`
+
+TypeScript 添加到**现有的 Create React App 项目**:
+
+`npm install --save typescript @types/node @types/react @types/react-dom @types/jest1`
+
 
 
 ### 重载
