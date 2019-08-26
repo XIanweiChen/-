@@ -1,3 +1,5 @@
+
+
 # 组件注册
 
 ## [组件名](https://cn.vuejs.org/v2/guide/components-registration.html#组件名)
@@ -123,7 +125,7 @@ Vue.component('blog-post', {
 
 
 
-**重申一次，如果你使用字符串模板，那么这个限制就不存在了。**
+**重申一次，如果你使用字符串模板，那么这个限制就不存在了。** ???
 
 ## [Prop 类型](https://cn.vuejs.org/v2/guide/components-props.html#Prop-类型)
 
@@ -659,9 +661,200 @@ slotProps为任意取的名字   default需和子组件里的相同
 
 
 
+# 动态组件 & 异步组件
+
+## [在动态组件上使用 `keep-alive`](https://cn.vuejs.org/v2/guide/components-dynamic-async.html#在动态组件上使用-keep-alive)
+
+```html
+<!-- 失活的组件将会被缓存！-->
+<keep-alive>
+  <component v-bind:is="currentTabComponent"></component>
+</keep-alive>
+```
+
+你可以在[这个 fiddle](https://jsfiddle.net/chrisvfritz/Lp20op9o/) 查阅到完整的实示例代码。
+
+> 注意这个 `<keep-alive>` 要求被切换到的组件都有自己的名字，不论是通过组件的 `name`选项还是局部/全局注册。
+
+## [异步组件](https://cn.vuejs.org/v2/guide/components-dynamic-async.html#异步组件)
+
+1.在大型应用中，我们可能需要将应用分割成小一些的代码块，并且只在需要的时候才从服务器加载一个模块
+
+```js
+Vue.component('async-example', function (resolve, reject) {
+  setTimeout(function () {
+    // 向 `resolve` 回调传递组件定义
+    resolve({
+      template: '<div>I am async!</div>'
+    })
+  }, 1000)
+})
+```
+
+2.一个推荐的做法是将异步组件和 [webpack 的 code-splitting 功能](https://webpack.js.org/guides/code-splitting/)一起配合使用：
+
+```js
+Vue.component('async-webpack-example', function (resolve) {
+  // 这个特殊的 `require` 语法将会告诉 webpack
+  // 自动将你的构建代码切割成多个包，这些包
+  // 会通过 Ajax 请求加载
+  require(['./my-async-component'], resolve)
+})
+```
+
+3.你也可以在工厂函数中返回一个 `Promise`
+
+```js
+Vue.component(
+  'async-webpack-example',
+  // 这个 `import` 函数会返回一个 `Promise` 对象。
+  () => import('./my-async-component')
+)
+```
+
+4.当使用[局部注册](https://cn.vuejs.org/v2/guide/components-registration.html#局部注册)的时候，你也可以直接提供一个返回 `Promise` 的函数：
+
+```js
+new Vue({
+  // ...
+  components: {
+    'my-component': () => import('./my-async-component')
+  }
+})
+```
+
+### [处理加载状态](https://cn.vuejs.org/v2/guide/components-dynamic-async.html#处理加载状态)
+
+```js
+const AsyncComponent = () => ({
+  // 需要加载的组件 (应该是一个 `Promise` 对象)
+  component: import('./MyComponent.vue'),
+  // 异步组件加载时使用的组件
+  loading: LoadingComponent,
+  // 加载失败时使用的组件
+  error: ErrorComponent,
+  // 展示加载时组件的延时时间。默认值是 200 (毫秒)
+  delay: 200,
+  // 如果提供了超时时间且组件加载也超时了，
+  // 则使用加载失败时使用的组件。默认值是：`Infinity`
+  timeout: 3000
+})
+```
+
+使用:
+
+```js
+  components: {
+    HelloWorld:AsyncComponent
+  }
+```
 
 
 
+# 处理边界情况
+
+## [访问元素 & 组件](https://cn.vuejs.org/v2/guide/components-edge-cases.html#访问元素-amp-组件)
+
+### [访问根实例 `$root`](https://cn.vuejs.org/v2/guide/components-edge-cases.html#访问根实例)
+
+在每个 `new Vue` 实例的子组件中，其根实例可以通过 `$root` 属性进行访问
+
+### [访问父级组件实例 `$parent`](https://cn.vuejs.org/v2/guide/components-edge-cases.html#访问父级组件实例)
+
+和 `$root` 类似，`$parent` 属性可以用来从一个子组件访问父组件的实例。它提供了一种机会，可以在后期随时触达父级组件，以替代将数据以 prop 的方式传入子组件的方式
+
+### [访问子组件实例或子元素 `$refs`](https://cn.vuejs.org/v2/guide/components-edge-cases.html#访问子组件实例或子元素)
+
+尽管存在 prop 和事件，有的时候你仍可能需要在 JavaScript 里直接访问一个子组件。为了达到这个目的，你可以通过 `ref` 特性为这个子组件赋予一个 ID 引用。例如：
+
+```html
+<base-input ref="usernameInput"></base-input>
+```
+
+现在在你已经定义了这个 `ref` 的组件里，你可以使用：
+
+```html
+this.$refs.usernameInput
+```
+
+在父组件中给子组件加ref可以获取子组件的vue实例,然后调用子组件的方法
+
+
+
+> `$refs` 只会在组件渲染完成之后生效，并且它们不是响应式的。这仅作为一个用于直接操作子组件的“逃生舱”——你应该避免在模板或计算属性中访问 `$refs`。
+
+
+
+### [依赖注入⭐️](https://cn.vuejs.org/v2/guide/components-edge-cases.html#依赖注入)
+
+`provide` 选项允许我们指定我们想要**提供**给后代组件的数据/方法。在这个例子中，就是 `<google-map>` 内部的 `getMap` 方法：
+
+```js
+provide: function () {
+  return {
+    getMap: this.getMap
+  }
+}
+```
+
+然后在任何后代组件里，我们都可以使用 `inject` 选项来接收指定的我们想要添加在这个实例上的属性：
+
+```js
+inject: ['getMap']
+```
+
+你可以把依赖注入看作一部分“大范围有效的 prop”，除了：
+
+- 祖先组件不需要知道哪些后代组件使用它提供的属性
+- 后代组件不需要知道被注入的属性来自哪里
+
+**所提供的属性是非响应式的!**
+
+## [程序化的事件侦听器 ☁️](https://cn.vuejs.org/v2/guide/components-edge-cases.html#程序化的事件侦听器)
+
+现在，你已经知道了 `$emit` 的用法，它可以被 `v-on` 侦听，但是 Vue 实例同时在其事件接口中提供了其它的方法。我们可以：
+
+- 通过 `$on(eventName, eventHandler)` 侦听一个事件
+- 通过 `$once(eventName, eventHandler)` 一次性侦听一个事件
+- 通过 `$off(eventName, eventHandler)` 停止侦听一个事件
+
+我甚至可以让多个输入框元素同时使用不同的 Pikaday，每个新的实例都程序化地在后期清理它自己：
+
+```js
+
+mounted: function () {
+  this.attachDatepicker('startDateInput')
+  this.attachDatepicker('endDateInput')
+},
+methods: {
+  attachDatepicker: function (refName) {
+    var picker = new Pikaday({
+      field: this.$refs[refName],
+      format: 'YYYY-MM-DD'
+    })
+
+    this.$once('hook:beforeDestroy', function () {
+      picker.destroy()
+    })
+  }
+}
+```
+
+## [循环引用](https://cn.vuejs.org/v2/guide/components-edge-cases.html#循环引用)
+
+### [递归组件](https://cn.vuejs.org/v2/guide/components-edge-cases.html#递归组件)
+
+组件是可以在它们自己的模板中调用自身的。不过它们只能通过 `name` 选项来做这件事：
+
+```js
+name: 'unique-name-of-my-component'
+```
+
+当你使用 `Vue.component` 全局注册一个组件时，这个全局的 ID 会自动设置为该组件的 `name` 选项。
+
+### [组件之间的循环引用❕](https://cn.vuejs.org/v2/guide/components-edge-cases.html#组件之间的循环引用)
+
+看原文
 
 ## [模板定义的替代品](https://cn.vuejs.org/v2/guide/components-edge-cases.html#模板定义的替代品)
 
@@ -682,5 +875,26 @@ slotProps为任意取的名字   default需和子组件里的相同
 ```js
 Vue.component('hello-world', {
   template: '#hello-world-template'
+})
+```
+
+
+
+## [控制更新](https://cn.vuejs.org/v2/guide/components-edge-cases.html#控制更新)
+
+### [强制更新 `$forceUpdate`](https://cn.vuejs.org/v2/guide/components-edge-cases.html#强制更新)
+
+### [通过 `v-once` 创建低开销的静态组件  ❕](https://cn.vuejs.org/v2/guide/components-edge-cases.html#通过-v-once-创建低开销的静态组件)
+
+渲染普通的 HTML 元素在 Vue 中是非常快速的，但有的时候你可能有一个组件，这个组件包含了**大量**静态内容。在这种情况下，你可以在根元素上添加 `v-once` 特性以确保这些内容只计算一次然后缓存起来，就像这样：
+
+```js
+Vue.component('terms-of-service', {
+  template: `
+    <div v-once>
+      <h1>Terms of Service</h1>
+      ... a lot of static content ...
+    </div>
+  `
 })
 ```
