@@ -857,7 +857,7 @@ methods: {
 }
 ```
 
-### [在组件上使用 `v-model`](https://cn.vuejs.org/v2/guide/components.html#在组件上使用-v-model)
+### [在组件上使用 `v-model`⭐️⭐️⭐️](https://cn.vuejs.org/v2/guide/components.html#在组件上使用-v-model)
 
 自定义事件也可以用于创建支持 `v-model` 的自定义输入组件。记住：
 
