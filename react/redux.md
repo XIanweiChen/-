@@ -142,6 +142,6 @@ const mapDispatchToProps = { increment, decrement, reset }
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Counter)
+)(Counter)   //Counter的props会被传入一个dispatch函数
 ```
 
