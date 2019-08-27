@@ -898,3 +898,11 @@ Vue.component('terms-of-service', {
   `
 })
 ```
+
+## [JSX](https://cn.vuejs.org/v2/guide/render-function.html#JSX)
+
+和reac中的一样
+
+## [函数式组件](https://cn.vuejs.org/v2/guide/render-function.html#函数式组件)
+
+不怎么懂 先放着
