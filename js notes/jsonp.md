@@ -43,7 +43,7 @@ app.listen(4000)
             return new Promise((resolve, reject) => {
                 // 处理传参成xx=yy&aa=bb的形式
                 const handleData = (data) => {
-                    const keys = Object.keys(data)
+                    const keys = Object.keys(data)  //["url", "data"]
                     const keysLen = keys.length
                     return keys.reduce((pre, cur, index) => {
                         const value = data[cur]

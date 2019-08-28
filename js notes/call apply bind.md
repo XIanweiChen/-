@@ -9,7 +9,7 @@ https://blog.csdn.net/YZ0826/article/details/80176169
             }
             thisArg = thisArg || window    //把运行的环境传进去（某个对象）
             thisArg.fn = this    //为此对象添加一个function(调用call的函数)
-            let res 
+            let result 
             if(args.length!=0) {
                 result = thisArg.fn(...args)
             } else {
