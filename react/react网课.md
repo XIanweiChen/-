@@ -260,7 +260,7 @@ export default class Counter extends React.Component{
             }
         });
     }
-    componentWillMount(){//此时state,defaultProps,function 都可以被访问
+    componentWillMount(){//此时state,defaultProps,function 都可以被访问   没参数!!!!!
 
     }
     render(){
@@ -273,7 +273,7 @@ export default class Counter extends React.Component{
         )
         //在return之后虚拟DOM创建好了，但仍未挂载
     }
-    componentDidMount(){//已经挂载，有可见的DOM元素
+    componentDidMount(){//已经挂载，有可见的DOM元素  没参数!!!!!
         console.log(document.getElementById('myh3'));  //此时可操作DOM元素
     }
 

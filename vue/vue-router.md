@@ -198,3 +198,119 @@ export default {
 </script>
 ```
 
+# 编程式的导航
+
+##### `router.push(location, onComplete?, onAbort?)`
+
+| **声明式**                | **编程式**         |
+| ------------------------- | ------------------ |
+| `<router-link :to="...">` | `router.push(...)` |
+
+```js
+// 字符串
+router.push('home')
+
+// 对象
+router.push({ path: 'home' })
+
+// 命名的路由
+router.push({ name: 'user', params: { userId: '123' }})
+
+// 带查询参数，变成 /register?plan=private
+router.push({ path: 'register', query: { plan: 'private' }})
+```
+
+**注意：如果提供了 path，params 会被忽略，上述例子中的 query 并不属于这种情况。取而代之的是下面例子的做法，你需要提供路由的 name 或手写完整的带有参数的 path：**
+
+```js
+const userId = '123'
+router.push({ name: 'user', params: { userId }}) // -> /user/123
+router.push({ path: `/user/${userId}` }) // -> /user/123
+// 这里的 params 不生效
+router.push({ path: '/user', params: { userId }}) // -> /user
+```
+
+**同样的规则也适用于 `router-link` 组件的 `to` 属性。**
+
+##### `router.replace(location, onComplete?, onAbort?)`
+
+跟 `router.push` 很像，唯一的不同就是，它不会向 history 添加新记录，而是跟它的方法名一样 —— 替换掉当前的 history 记录。
+
+|                                   |                       |
+| --------------------------------- | --------------------- |
+| `<router-link :to="..." replace>` | `router.replace(...)` |
+
+## `router.go(n)`
+
+这个方法的参数是一个整数，意思是在 history 记录中向前或者后退多少步，类似 `window.history.go(n)`
+
+# 命名路由
+
+就是给路由多取个名字,path也是要多
+
+```js
+const router = new VueRouter({
+  routes: [
+    {
+      path: '/user/:userId',
+      name: 'user',
+      component: User
+    }
+  ]
+})
+```
+
+```html
+<router-link :to="{ name: 'user', params: { userId: 123 }}">User</router-link>
+```
+
+#  重定向和别名
+
+## 重定向
+
+重定向也是通过 `routes` 配置来完成，下面例子是从 `/a` 重定向到 `/b`：
+
+```js
+const router = new VueRouter({
+  routes: [
+    { path: '/a', redirect: '/b' }
+  ]
+})
+```
+
+重定向的目标也可以是一个命名的路由：
+
+```js
+const router = new VueRouter({
+  routes: [
+    { path: '/a', redirect: { name: 'foo' }}
+  ]
+})
+```
+
+甚至是一个方法，动态返回重定向目标：
+
+```js
+const router = new VueRouter({
+  routes: [
+    { path: '/a', redirect: to => {
+      // 方法接收 目标路由 作为参数
+      // return 重定向的 字符串路径/路径对象
+    }}
+  ]
+})
+```
+
+## 别名
+
+**/a 的别名是 /b，意味着，当用户访问 /b 时，URL 会保持为 /b，但是路由匹配则为 /a，就像用户访问 /a 一样。**
+
+上面对应的路由配置为：
+
+```js
+const router = new VueRouter({
+  routes: [
+    { path: '/a', component: A, alias: '/b' }
+  ]
+})
+```
