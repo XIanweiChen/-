@@ -76,7 +76,7 @@ export const getName = async (dispatch)=>{
    let {data:result} = await axios({
     url: "https://jsonplaceholder.typicode.com/posts",
     type: 'post'
-})
+		})
    dispatch({
        type:'set',
        payload:result

@@ -103,6 +103,9 @@ npm install --save express-art-template
     {{block 'content'}}{{/block}}
 </body>
 </html>
+```
+
+```html
 <!--index.art-->
 {{extend './layout.art'}}
 
@@ -116,6 +119,8 @@ npm install --save express-art-template
 <p>This is just an awesome page.</p>
 {{/block}}
 ```
+
+
 
 渲染 index.art 后，将自动应用布局骨架。
 
@@ -544,5 +549,33 @@ app.use(static('./node_modules'))
 // 限定请求路径前缀
 app.use('/public', static('./public'))
 app.use('/node_modules', static('./node_modules'))
+```
+
+
+
+### `http-errors`模块
+
+用于创建错误
+
+```js
+app.use(function(req, res, next) {
+    next(createError(404));
+});
+```
+
+此时
+
+err.message和err.status会自动设置与404相对应的
+
+```js
+
+app.use(function (err, req, res, next) {
+    // set locals, only providing error in development(这里是在设置error模版的内容)
+    res.locals.message = err.message;
+    // render the error page
+    console.log(err.message)
+    res.status(err.status || 500);
+    res.render('error');
+})
 ```
 
