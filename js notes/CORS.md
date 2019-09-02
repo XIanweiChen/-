@@ -16,12 +16,10 @@
 
 - Fetch 规范定义了
 
-  对 CORS 安全的首部字段集合
-
-  ，不得人为设置该集合之外的其他首部字段。该集合为：
+  对 CORS 安全的首部字段集合，不得人为设置该集合之外的其他首部字段。该集合为：
 
   - [`Accept`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Accept)
-  - [`Accept-Language`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Accept-Language)
+- [`Accept-Language`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Accept-Language)
   - [`Content-Language`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Language)
   - [`Content-Type`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Type) （需要注意额外的限制）
   - `DPR`
@@ -29,7 +27,7 @@
   - `Save-Data`
   - `Viewport-Width`
   - `Width`
-
+  
 - `Content-Type`
 
    
@@ -77,16 +75,13 @@
   - `Viewport-Width`
   - `Width`
 
-- `Content-Type`
-
-   
-
-  的值不属于下列之一:
+- `Content-Type`的值不属于下列之一:
 
   - `application/x-www-form-urlencoded`
-  - `multipart/form-data`
+- `multipart/form-data`
   - `text/plain`
 
 - 请求中的[`XMLHttpRequestUpload`](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequestUpload) 对象注册了任意多个事件监听器。
 
 - 请求中使用了[`ReadableStream`](https://developer.mozilla.org/zh-CN/docs/Web/API/ReadableStream)对象。
+
