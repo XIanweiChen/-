@@ -46,7 +46,7 @@ function compare(a,b){
         }
     }
 }
-console.log(compare('一','二'))
+// console.log(compare('一','二'))
 function bubblesort(arg){
     for(let i= 0;i<arg.length-1;i++){
         for(let j=0;j<arg.length-1-i;j++){
@@ -85,7 +85,7 @@ async function readByAsync(path){
     }
         // console.log(res)
         for(let arg in res){
-            console.log(res[arg])
+            // console.log(res[arg])
             bubblesort(res[arg])
         }
         console.log(res)
