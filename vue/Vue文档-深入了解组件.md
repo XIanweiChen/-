@@ -661,7 +661,7 @@ slotProps为任意取的名字   default需和子组件里的相同
 
 
 
-# 动态组件 & 异步组件
+# 动态组件 & 异步组件⭐️
 
 ## [在动态组件上使用 `keep-alive`](https://cn.vuejs.org/v2/guide/components-dynamic-async.html#在动态组件上使用-keep-alive)
 

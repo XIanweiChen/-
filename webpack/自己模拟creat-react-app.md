@@ -183,7 +183,7 @@ const htmlPlugin = new HtmlWebpackPlugin({
 配置:
 
 ```js
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin'); //!!!!!!
  
 const webpackConfig = {
     plugins: [
