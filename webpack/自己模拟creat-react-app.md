@@ -1,10 +1,12 @@
- [code]( /Users/ccc/Desktop/大学/大三上/web/html/webpack-demo/wp2 ) 
+ [code]( /Users/ccc/Desktop/大学/大三上/web/html/webpack-demo/wp-create-react-app ) 
 
 
 
 Tips:
 
 里面的导入都是用到`const xxx = require('xxx')`
+
+# 配置create-react-app
 
 ### 1.npm init 
 
@@ -376,4 +378,173 @@ module.exports = {
 }
 
 ```
+
+
+
+# Server Side Render
+
+https://www.jianshu.com/p/5cbc3349819f
+
+https://segmentfault.com/a/1190000018672269
+
+
+
+1. 写一个serverApp.js文件将首屏模块导出
+
+   ```js
+   import React from 'react'
+   import App from './App'
+   
+   export default <App />
+   ```
+
+2. 配置`webpack.client.config.js`(用于打包客户端应用,不用变)和`webpack.server.config.js`文件
+
+   `webpack.server.config.js`有较大修改
+
+   ```js
+   const path = require('path');
+   
+   
+   module.exports = {
+       mode: 'development',
+       target:'node',  //用于node环境
+       entry:path.join(__dirname,'src/serverApp.js'),
+       output:{
+           libraryTarget:'commonjs2', //!!!!!!!千万不能少
+           filename:'serverApp.js',   
+           publicPath:'/static/'
+       },
+       
+       module: {
+           rules: [
+               {
+                   test: /\.js$/,
+                   exclude: /(node_modules|bower_components)/,
+                   use: {
+                       loader: 'babel-loader',
+                       options: {
+                           presets: ['@babel/preset-env', "@babel/preset-react"],
+                           plugins: ['@babel/plugin-proposal-object-rest-spread', '@babel/plugin-transform-runtime', '@babel/plugin-proposal-class-properties']
+                       }
+                   }
+               },
+               {
+                   test: /\.css$/,
+                   use: [
+                       'isomorphic-style-loader',
+                       'css-loader',
+                   ]
+               },
+               {
+                   test: /\.(png|svg|jpg|gif)$/,
+                   use: [
+                       'file-loader'
+                   ]
+               }
+           ]
+       },
+   
+   
+   }
+   
+   ```
+
+   
+
+3. 写服务器(用express)
+
+   ```js
+   const express = require('express')
+   const path = require('path')
+   const fs = require('fs')
+   const content = require('../dist/serverApp.js').default  //引用组件内容
+   const ReactDOMServer = require('react-dom/server');
+   const template = ReactDOMServer.renderToString(content)  //react内置函数奖组件转成字符串
+   const html = fs.readFileSync(path.join(__dirname,'../dist/index.html'),'utf-8')  //获取html模版
+   const newHtml = html.replace('<!-- app -->',template)   //替换内容
+   console.log(newHtml)
+   const app = express()
+   
+   app.use('/static',express.static(path.join(__dirname,'../dist')))
+   
+   app.get('/',function(req,res){   
+       res.send(newHtml)//返回结果
+   })
+   
+   
+   
+   app.listen(5000)
+   ```
+
+   
+
+4. 分别打包client和server,运行服务
+
+## 问题
+
+#### ` target:'node'`失效
+
+要加 libraryTarget:'commonjs2',
+
+```js
+    output:{
+        libraryTarget:'commonjs2',//!!!!!!!千万不能少
+        filename:'serverApp.js',   
+        publicPath:'/static/'
+    },
+```
+
+此时打包出来的`serverApp`会以`module.exports`开头,才能用于node
+
+```js
+module.exports =
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+```
+
+
+
+#### 打包的js文件404
+
+修改server.js引入静态资源
+
+```js
+app.use('/static',express.static(path.join(__dirname,'../dist')))
+```
+
+注意⚠️:这里要加`'/static'`,否则会直接路由到你客户端打包好的index文件(因为他也在dist中)
+
+但加了`'/static'`会导致文件再次找不到,此时要配置webpack config文件
+
+注意⚠️:两个webpack config文件都要配置
+
+```js
+    output:{
+        publicPath:'/static/'
+    }
+```
+
+因为`webpack.client.config.js`为了找到main.js文件,`webpack.server.config.js`为了找到组件中使用的图片等静态资源
+
+#### css失效
+
+在`webpack.server.config.js`修改css 文件的loader
+
+```js
+            {
+                test: /\.css$/,
+                use: [
+                    'isomorphic-style-loader',
+                    'css-loader',
+                ]
+            }
+```
+
+
 

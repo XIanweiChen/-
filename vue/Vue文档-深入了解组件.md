@@ -311,7 +311,7 @@ Vue.component('blog-post', {
 
 其他会被替换
 
-### [禁用特性继承❕](https://cn.vuejs.org/v2/guide/components-props.html#禁用特性继承)
+### [禁用特性继承❕](https://cn.vuejs.org/v2/guide/components-props.html#禁用特性继承) 
 
 如果你**不**希望组件的根元素继承特性，你可以在组件的选项中设置 `inheritAttrs: false`。例如：
 
@@ -339,7 +339,7 @@ Vue.component('my-component', {
 
 有了 `inheritAttrs: false` 和 `$attrs`，你就可以手动决定这些特性会被赋予哪个元素。在撰写[基础组件](https://cn.vuejs.org/v2/style-guide/#基础组件名-强烈推荐)的时候是常会用到的：
 
-```
+```vue
 
 Vue.component('base-input', {
   inheritAttrs: false,
@@ -415,7 +415,7 @@ Vue.component('base-checkbox', {
 
 ------
 
-$listeners` 属性，它是一个对象，里面包含了作用在这个组件上的所有监听器。例如：
+`$listeners` 属性，它是一个对象，里面包含了作用在这个组件上的所有监听器。例如：
 
 ```js
 {
@@ -428,7 +428,7 @@ $listeners` 属性，它是一个对象，里面包含了作用在这个组件�
 
 ```js
 Vue.component('base-input', {
-  inheritAttrs: false,
+  inheritAttrs: false,  //加了这个 <label>不会显示即成属性,但$attrs一直都是有的
   props: ['label', 'value'],
   computed: {
     inputListeners: function () {
@@ -452,7 +452,7 @@ Vue.component('base-input', {
     <label>
       {{ label }}
       <input
-        v-bind="$attrs"
+        v-bind="$attrs" 
         v-bind:value="value"
         v-on="inputListeners"
       >
