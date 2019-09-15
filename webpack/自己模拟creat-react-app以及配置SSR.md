@@ -225,6 +225,34 @@ devServer: {   //devServer的根路径
 }
 ```
 
+##### react-hot-loader
+
+能够不刷新页面就完成页面跟新(这样就不用在此请求数据)
+
+使用:
+
+1.在babel 的plugin中添加`react-hot-loader/babel`
+
+```js
+options: {
+  presets: ['@babel/preset-env', "@babel/preset-react"],
+    plugins: ['@babel/plugin-proposal-object-rest-spread', '@babel/plugin-transform-runtime', '@babel/plugin-proposal-class-properties',"react-hot-loader/babel"]
+}
+```
+
+2.`index.js`中
+
+```js
+import { hot } from 'react-hot-loader/root';  //导入
+
+
+//......
+
+export default hot(MyRouter);  //一个高阶组件
+```
+
+
+
 ### 6.创建脚本
 
 ```js
@@ -452,15 +480,21 @@ https://segmentfault.com/a/1190000018672269
    
    ```
 
+3. 打包
+
+   ```json
+    "build": "NODE_ENV=development webpack --config webpack.client.config.js &&webpack --config webpack.server.config.js",
+   ```
+
    
 
-3. 写服务器(用express)
+4. 写服务器(用express)
 
    ```js
    const express = require('express')
    const path = require('path')
    const fs = require('fs')
-   const content = require('../dist/serverApp.js').default  //引用组件内容
+   const content = require('../dist/serverApp.js').default  //引用组件内容 !!!!.default 
    const ReactDOMServer = require('react-dom/server');
    const template = ReactDOMServer.renderToString(content)  //react内置函数奖组件转成字符串
    const html = fs.readFileSync(path.join(__dirname,'../dist/index.html'),'utf-8')  //获取html模版
@@ -481,11 +515,24 @@ https://segmentfault.com/a/1190000018672269
 
    
 
-4. 分别打包client和server,运行服务
+5. 修改`index.js  `
+
+   ```diff
+   +ReactDom.hydrate(<Router />,document.getElementById('root'))
+   -ReactDom.render(<Router />,document.getElementById('root'))
+   ```
+
+   原因:
+
+   如果你在已有服务端渲染标记的节点上调用 [`ReactDOM.hydrate()`](https://zh-hans.reactjs.org/docs/react-dom.html#hydrate) 方法，React 将会保留该节点且只进行事件处理绑定，从而让你有一个非常高性能的首次加载体验。
+
+6. 分别打包client和server,运行服务
 
 ## 问题
 
-#### ` target:'node'`失效
+
+
+#### target:'node'`失效
 
 要加 libraryTarget:'commonjs2',
 
@@ -547,6 +594,22 @@ app.use('/static',express.static(path.join(__dirname,'../dist')))
                 ]
             }
 ```
+
+
+
+
+
+### cross-env 
+
+在linux和windows中都可以设置`NODE_ENV=development `
+
+
+
+
+
+
+
+
 
 
 

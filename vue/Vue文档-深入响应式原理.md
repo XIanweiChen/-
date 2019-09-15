@@ -56,7 +56,7 @@ Vue提供了两个版本，一个是Runtime+Compiler版本的，一个是Runtime
 
 在实际开发当中，我们通常在组件中采用的是编写template模版。那template是如何编译的呢？来看一下编译的入口，定义在src/compiler/index.js中：
 
-```
+```js
  export const createCompiler = createCompilerCreator(function baseCompile (
   template: string,
   options: CompilerOptions
@@ -73,7 +73,6 @@ Vue提供了两个版本，一个是Runtime+Compiler版本的，一个是Runtime
   }
 })
 
-复制代码
 ```
 
 编译主要有三个过程：
@@ -82,25 +81,23 @@ Vue提供了两个版本，一个是Runtime+Compiler版本的，一个是Runtime
 
 - AST（在计算机科学中，抽象语法树（abstract syntax tree或者缩写为AST），或者语法树（syntax tree），是源代码的抽象语法结构的树状表现形式，这里特指编程语言的源代码。）
 
-```
+```js
  const ast = parse(template.trim(), options)
-复制代码
 ```
 
 parse 会用正则等方式解析 template模板中的指令、class、style等数据，形成AST树。AST是一种用Javascript对象的形式来描述整个模版，整个parse的过程就是利用正则表达式来顺序地解析模版，当解析到开始标签，闭合标签，文本的时候会分别对应执行响应的回调函数，从而达到构造AST树的目的。
 
 举个例子：
 
-```
+```js
 <div :class="c" class="demo" v-if="isShow">
     <span v-for="item in sz">{{item}}</span>
 </div>
-复制代码
 ```
 
 经过一系列的正则解析，会得到的AST如下：
 
-```
+```js
  {
     /* 标签属性的map，记录了标签上属性 */
     'attrsMap': {
@@ -145,23 +142,21 @@ parse 会用正则等方式解析 template模板中的指令、class、style等�
         }
     ]
 }
-复制代码
 ```
 
 当构造完AST之后，下面就是优化这颗AST树。
 
 2.optimize：优化AST语法树
 
-```
+```js
  optimize(ast, options)
-复制代码
 ```
 
 为什么此处会有优化过程？我们知道Vue是数据驱动，是响应式的，但是template模版中并不是所有的数据都是响应式的，也有许多数据是初始化渲染之后就不会有变化的，那么这部分数据对应的DOM也不会发生变化。后面有一个 update 更新界面的过程，在这当中会有一个 patch 的过程， diff 算法会直接跳过静态节点，从而减少了比较的过程，优化了 patch 的性能。
 
 来看下optimize这部分代码的定义，在src/compiler/optimize.js中：
 
-```
+```js
  export function optimize (root: ?ASTElement, options: CompilerOptions) {
   if (!root) return
   isStaticKey = genStaticKeysCached(options.staticKeys || '')
@@ -171,16 +166,15 @@ parse 会用正则等方式解析 template模板中的指令、class、style等�
   // second pass: mark static roots.
   markStaticRoots(root, false)
 }
-复制代码
+
 ```
 
 我们可以看到，optimize实际上就做了2件事情，一个是调用markStatic()来标记静态节点，另一个是调用markStaticRoots()来标记静态根节点。
 
 3.codegen：将优化后的AST树转换成可执行的代码。
 
-```
+```js
  const code = generate(ast, options)
-复制代码
 ```
 
 template模版经历过parse->optimize->codegen三个过程之后，就可以d得到render function函数了。
