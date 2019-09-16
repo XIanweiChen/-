@@ -528,7 +528,7 @@ https://segmentfault.com/a/1190000018672269
 
 6. 分别打包client和server,运行服务
 
-## 问题
+## ⚠️⚠️⚠️问题
 
 
 
@@ -597,19 +597,259 @@ app.use('/static',express.static(path.join(__dirname,'../dist')))
 
 
 
+## 配置开发环境
 
+在开发的时候一般用devServer开发客户端,所以要配置server端也可以动态的随带代码热跟新
 
-### cross-env 
+所以要配置配置开发环境
+
+### 先给`server.js`加上NODE_ENV=development
+
+#### cross-env 
 
 在linux和windows中都可以设置`NODE_ENV=development `
 
+#### 改变脚本:
+
+```json
+"server": "cross-env NODE_ENV=development node server/server.js"
+```
+
+### 判断当前开发环境
+
+```js
+const isDev = process.env.NODE_ENV === 'development'
+
+if (!isDev) {
+	//......
+}else{
+    const devStatic = require('./util/dev-static')  //获取开发环境时的配置
+    devStatic(app)
+}
+```
+
+### 编写`dev-static.js`
+
+```js
+
+const axios = require('axios')
+const path = require('path')
+const webpack = require('webpack')
+const MemoryFs = require('memory-fs')
+const ReactDomServer = require('react-dom/server')
+const proxy = require('http-proxy-middleware')
+
+const serverConfig = require('../../webpack.server.config')  //获取webpack-serber的配置文件
+
+const getTemplate = () => {   //获取html模版
+    return new Promise((resolve, reject) => {
+        axios.get('http://localhost:3000/static/index.html')
+            .then(res => {
+                resolve(res.data)
+            })
+            .catch(reject)
+    })
+}
+
+let serverBoundle = null
+const Module = module.constructor //获取module的构造函数
+const mfs = new MemoryFs     //读取内存中的模块,api和fs相同
+const serverCompiler = webpack(serverConfig)   //创建一个webpack,webpack不仅能在cli中用,还能在代码中用
+serverCompiler.outputFileSystem = mfs  //把bundle写在内存中
+serverCompiler.watch({}, (err, stats) => { //{}表示不加配置,stats是类似你在terminal用webpack输出的那些打包信息
+    stats = stats.toJson()
+    stats.errors.forEach(err => Console.log(err))
+    stats.warnings.forEach(warn => console.log(warn))
+
+    const bundlePath = path.join( //从config中获取bundle的输出路径
+        serverConfig.output.path,
+        serverConfig.output.filename
+    )
+
+    const bundle = mfs.readFileSync(bundlePath,'utf-8') //!!!! utf-8
+    const m = new Module()
+    
+    //为什么要进行一下这一步?
+    //bundle是string的代码,不能通过ReactDomServer.renderToString
+    //所以要先通过module编译导出才能变成Symbol(react.element)
+    m._compile(bundle,'serverApp.js') //!!!!一定要加serverApp.js  把bundle重新编译成一个模块导出
+    serverBoundle = m.exports.default
+    console.log(serverBoundle)
+})
+
+module.exports = function (app) {
+    //因为静态资源(js,svg等)都在内存中无法设置static,所以只能通过代理的方式获取
+    app.use('/static/',proxy({
+        target:'http://localhost:3000'
+    }))
+    
+    app.use(function (req, res) {
+        getTemplate().then(template => {
+            const content = ReactDomServer.renderToString(serverBoundle)
+            const newHtml = template.replace('<!-- app -->', content)   //替换内容
+            res.send(newHtml)
+        })
+    })
+}
+
+```
+
+serverBoundle = require(bundlePath).default; //!!!!!!!!!!!!!!!!!!直接require不就行了   教程有问题
+
+### ⚠️⚠️⚠️难点/注意点
+
+- ⚠️获取html,js的时候要注意,debServer的代码都是存在内存中(未写入磁盘):
+
+  要通过`memory-fs`读取
+
+  `http-proxy-middleware`代理获取静态资源
+
+- ⚠️⚠️服务端渲染使用客户端的react-hot-middleware的时候不能使用nodemon(他会导致服务区重启,从而导致`0443dff5d0f9ff2ee22a.hot-update.json`的读取timeout)活着配置nodemon(见下面nodemon配置)
+
+- ⚠️webpack不仅能在cli中用,还能在代码中用
+
+- ⚠️
+
+  ```js
+    //不能直接 serverBoundle = require(bundlePath).default; 
+    //bundlePath =  /Users/ccc/Desktop/大学/大三上/web/html/webpack-demo/server-side-render/dist/serverApp.js
+    //由于在内存中获取不到
+  ```
+
+  
+
+- ⚠️用`module.constructor`重新编译mfs读取到的string文件,然后再  `serverBoundle = m.exports.default`,效果相当于`serverBoundle =  require('xxxxx')`
+
+  ```js
+  const Module = module.constructor //获取module的构造函数
+  const bundle = mfs.readFileSync(bundlePath,'utf-8') //!!!! utf-8
+  const m = new Module()
+  m._compile(bundle,'serverApp.js') //!!!!一定要加serverApp.js  把bundle重新编译成一个模块导出
+  serverBoundle = m.exports.default
+  ```
+
+  
+
+## 使用eslint
+
+在webpack中加载rules的最前面
+
+`enforce: 'pre'`表示必须先通过这个下面的loader才会执行
+
+```js
+      {
+        enforce: 'pre',
+        test: /\.js$/,
+        exclude: /(node_modules|bower_components)/,
+        loader: 'eslint-loader',
+      },
+       
+```
+
+安装插件
+
+```bash
+npm i babel-eslint eslint-config-airbnb eslint-config-standard eslint-loader eslint-plugin-import eslint-plugin-node eslint-plugin-promise eslint-plugin-standard eslint-plugin-import eslint-plugin-jsx-a11y eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-import -D 
+```
+
+快速检查:
+
+```json
+"lint": "eslint --ext .js src/"
+```
 
 
 
+快速修复
+
+```bash
+eslint [filename or dirname] --fix
+```
+
+## husky
+
+Git hooks made easy
+
+Husky can prevent bad `git commit`, `git push` and more 🐶 *woof!*
+
+安装:
+
+```bash
+npm install husky --save-dev
+```
+
+```json
+// package.json
+{
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test",
+      "pre-push": "npm test",
+      "...": "..."
+    }
+  }
+}
+```
 
 
 
+## webpack-merge
 
+使用方法:见`webpack文档/生产环境/配置`
 
+### ⚠️⚠️⚠️普通merge的问题
 
+`common`
+
+```js
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader', 'css-loader',
+        ]
+      }
+```
+
+`server`
+
+```js
+      {
+        test: /\.css$/,
+        use: [
+          'isomorphic-style-loader', 'css-loader',
+        ]
+      }
+```
+
+合并后还是没变!!!!
+
+```js
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader', 'css-loader',
+        ]
+      }
+```
+
+**解决办法:**
+
+使用`merge.smart`
+
+webpack-merge tries to be smart about merging loaders when merge.smart is used. Loaders with matching tests will be merged into a single loader value.
+
+```js
+//output
+{ test: /\.css$/,
+  use: [ 'style-loader', 'isomorphic-style-loader', 'css-loader' ]
+}
+```
+
+## nodemon
+
+配置:
+
+```json
+
+```
 
