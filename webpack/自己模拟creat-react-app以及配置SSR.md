@@ -704,7 +704,7 @@ serverBoundle = require(bundlePath).default; //!!!!!!!!!!!!!!!!!!直接require�
 
   `http-proxy-middleware`代理获取静态资源
 
-- ⚠️⚠️服务端渲染使用客户端的react-hot-middleware的时候不能使用nodemon(他会导致服务区重启,从而导致`0443dff5d0f9ff2ee22a.hot-update.json`的读取timeout)活着配置nodemon(见下面nodemon配置)
+- ⚠️⚠️服务端渲染使用客户端的react-hot-loader的时候不能使用nodemon(他会导致服务区重启,从而导致`0443dff5d0f9ff2ee22a.hot-update.json`的读取timeout)活着配置nodemon(见下面nodemon配置)
 
 - ⚠️webpack不仅能在cli中用,还能在代码中用
 
