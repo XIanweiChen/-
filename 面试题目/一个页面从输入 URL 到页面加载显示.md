@@ -1,3 +1,5 @@
+## 一个页面从输入 URL 到页面加载显示完成，这个过程中都发生了什么
+
 [reference](https://www.jianshu.com/p/9341192f1f4a)
 
 ### 1.浏览器接收URL

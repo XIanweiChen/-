@@ -227,6 +227,8 @@ devServer: {   //devServer的根路径
 
 ##### react-hot-loader
 
+⚠️**必须最外层!!!**
+
 能够不刷新页面就完成页面跟新(这样就不用在此请求数据)
 
 使用:
@@ -849,7 +851,104 @@ webpack-merge tries to be smart about merging loaders when merge.smart is used. 
 
 配置:
 
+`nodemon.json:`
+
 ```json
+{
+  "ignore": [
+    ".git",
+    "node_modules/**/node_modules",
+    ".eslint",
+    "src",
+    "client"
+  ],
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "verbose": true,
+  "ext": "js"
+}
+
+```
+
+
+
+## mobx
+
+**首先要使babel支持`decorator`**
+
+安装依赖：
+
+```bat
+npm install --save-dev @babel/plugin-proposal-decorators
+npm install --save-dev babel-plugin-transform-decorators-legacy
+```
+
+更改`package.json`文件中的babel配置
+
+```js
+"babel": {
+    "presets": [
+      "react-app"
+    ],
+    "plugins": [
+      [
+        "@babel/plugin-proposal-decorators",
+        {
+          "legacy": true
+        }
+      ],
+      [
+        "@babel/plugin-proposal-class-properties",
+        {
+          "loose": true
+        }
+      ]
+    ]
+  },
+```
+
+安装mobx
+
+```bash
+npm i mobx mobx-react 
+```
+
+创建`app-state.js`
+
+```js
+import {
+  observable, computed, autorun, action,
+} from 'mobx'
+
+
+export class Appstate {
+  @observable count = 0
+
+  @observable name = 'cxw'
+
+  @computed get msg() {
+    return `${this.name}${this.count}`
+  }
+
+  @action add() {
+    this.count += 1
+  }
+}
+
+const appState = new Appstate()
+
+autorun(() => {
+  // console.log(appState.msg)
+})
+
+
+setInterval(() => {
+  appState.add()
+}, 1000)
+
+
+export default appState
 
 ```
 

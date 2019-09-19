@@ -13,3 +13,19 @@
 
 *(Function)*: 返回新的 debounced（防抖动）函数。
 
+### `_.times(n, [iteratee=_.identity])`
+
+#### 参数
+
+1. `n` *(number)*: 调用 `iteratee` 的次数。
+2. `[iteratee=_.identity]` *(Function)*: 每次迭代调用的函数。
+
+#### 返回
+
+*(Array)*: 返回调用结果的数组。
+
+```js
+_.times(3, String);
+// => ['0', '1', '2']
+```
+
