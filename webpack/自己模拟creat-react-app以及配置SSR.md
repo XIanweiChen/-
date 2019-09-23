@@ -534,7 +534,7 @@ https://segmentfault.com/a/1190000018672269
 
 
 
-#### target:'node'`失效
+#### `target:'node'`失效
 
 要加 libraryTarget:'commonjs2',
 
