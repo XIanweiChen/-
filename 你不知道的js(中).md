@@ -277,3 +277,33 @@ nibuzhidaodejs.html:141 3
 
 ```
 
+### 超时来取消事件
+
+```js
+
+    function timeoutify(fn, delay) {
+        var intv = setTimeout(function() {
+            intv = null;
+            fn(new Error("Timeout!"));
+        }, delay);
+        return function() { // 还没有超时?
+            if (intv) {
+                clearTimeout(intv);
+                fn.apply(this, arguments);
+            }
+        };
+    }
+
+    // 使用"error-first 风格" 回调设计
+		function foo(err,data) {
+    if (err) {
+        console.error(err);
+    } else {
+        console.log(data);
+    }
+    }
+    ajax("http://some.url.1", timeoutify(foo, 500));
+```
+
+
+
