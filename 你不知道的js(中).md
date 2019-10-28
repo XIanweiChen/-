@@ -25,6 +25,12 @@
 
 - 请务必记住，用 , 来连接一系列语句的时候，它的优先级最低，其他操作数的优先级都比它高。
 
+- promise.all的完成数组结果与指定的顺序一致(与完成顺序无关)
+
+- .then返回的是一个promise,值为上一个promise   return的值
+
+- 
+
 
 
 ### typeof 处理 undeclared 变量的方式
@@ -306,4 +312,133 @@ nibuzhidaodejs.html:141 3
 ```
 
 
+
+###  Promise会自动展开thenable 值
+
+如果向 Promise.resolve(..) 传递了一个非 Promise 的 thenable 值，前者就会试图展开这个值，而且展开过程会持续到提取出一个具体的非类 Promise 的最终值:
+
+```js
+var p1 = Promise.resolve( 42 );
+var p2 = Promise.resolve( p1 );
+p1 === p2; // true
+```
+
+### 决议(resolve)   or    完成(fulfill)
+
+Promise.resolve(..) 会将传入的真正 Promise 直接返回，对传 入的 thenable 则会展开
+
+```js
+var rejectedTh = {
+    then: function(resolved, rejected) {
+        rejected("Oops");
+    }
+};
+var rejectedPr = Promise.resolve(rejectedTh);
+```
+**虽然这里resolve了rejectedTh,但最终的结果是reject,所以用决议(resolve)命名函数比较好,而不是完成(fulfill)**
+
+### Function.apply.bind
+
+```js
+    function spread(fn) {
+        return Function.apply.bind(fn, null);
+    }
+    function fn(x,y){
+    	console.log(x,y)
+    }
+
+    let sprd = spread(fn) //1 2
+```
+
+解释:
+
+```js
+Function.apply.bind(fn, null);
+可看作 let apl = Function.apply
+apl.bind(fn,null) //就是把apl内部的this指向里fn
+```
+
+### generator 生成器
+
+```js
+var a = 1;
+var b = 2;
+
+function* foo() {
+    a++;
+    yield 22;
+    b = b * a;
+    a = (yield b) + 3;
+}
+let it = foo();
+
+let t1 = it.next() //a = 2 在yield 22停住
+let t2 = it.next() //a = 2  b = 4 在yield b停住  
+let t3 = it.next(1) //此时a = 1+3 ,迭代结束
+// t1.value:22
+// t2.value:4
+// t3.value:undefined 
+```
+#### 可以直接用for of 遍历生成器产生的迭代器
+
+```js
+for(let i of foo())console.log(i)   //这里必须是foo() !!!!!!!!!!
+// 22
+// 4
+// undefined 
+```
+
+#### 停止生成器
+
+```js
+
+    function* something() {
+        try {
+            var nextVal;
+            while (true) {
+                if (nextVal === undefined) {
+                    nextVal = 1;
+                } else {
+                    nextVal = (3 * nextVal) + 6;
+                }
+                yield nextVal;
+            }
+        }
+        // 如果有需要在这里放清理的函数
+        finally {
+            console.log("cleaning up!");
+        }
+    }
+
+    //1. 直接break
+    for (let i of something()) {
+        console.log(i)
+        if (i > 500) {
+            break
+        }
+    }
+    //2. it.return(..) 之后，它会立即终止生成器，这当然会运行 finally 语句
+    let it = something()
+    for (let i of it) {
+        console.log(i)
+        if (i > 500) {
+           console.log(it.return( "stop" ).value)
+        }
+    }
+```
+
+####  it.return  不会执行任何代码,直接返回
+
+```js
+
+    function* foo() {
+        a++;
+        yield 22;
+        b = b * a;
+        a = (yield b) + 3;
+    }
+    it.next()//{value: 22, done: false}
+    it.return(321312)//{value: 321312, done: true}
+		//此时b = b * a 未执行,b还是2
+```
 
