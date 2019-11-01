@@ -442,3 +442,48 @@ for(let i of foo())console.log(i)   //这里必须是foo() !!!!!!!!!!
 		//此时b = b * a 未执行,b还是2
 ```
 
+
+
+#### 生成器委托
+
+```js
+    function* foo() {
+        yield 'foo1'
+        console.log(yield *baz()) //这个yield其实不起停止作用
+        return 'foo2'
+    }
+
+    function* baz() {
+        yield 'baz1'
+        return 'baz2'
+    }
+    let it = foo()
+    
+    it.next()
+    //{value: "foo1", done: false}
+    it.next()
+    //{value: "baz1", done: false}
+    it.next()
+    //baz2
+    //{value: "foo2", done: true}
+```
+
+### 尾调用优化(Tail Call Optimization，TCO)
+
+```js
+function foo(x) {
+    return x;
+}
+function bar(y) {
+    return foo( y + 1 ); // 尾调用
+}
+function baz() {
+    return 1 + bar( 40 ); // 非尾调用 
+} 
+baz();// 42
+```
+
+- bar(40) 不是尾调用，因为在它完成后，它的结果需要加 上 1 才能由 baz() 返回。
+- 调用一个新的函数需要额外的一块预留内存来管理调用 栈，称为栈帧
+- **然而，如果支持 TCO 的引擎能够意识到 foo(y+1) 调用位于尾部，这意味着 bar(..) 基本 上已经完成了，那么在调用 foo(..) 时，它就不需要创建一个新的栈帧，而是可以重用已 有的 bar(..) 的栈帧。这样不仅速度更快，也更节省内存。**
+
