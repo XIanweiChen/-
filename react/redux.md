@@ -1,4 +1,4 @@
-### reducer
+### areducer
 
 reducer是一个function,state储存对象,action是传入的动作
 
@@ -37,7 +37,7 @@ const nameReducer = (state = {}, action) => {
 export default nameReducer;
 ```
 
-**合并reduce**
+#### **合并reduce**
 
 combineReducers
 
@@ -105,7 +105,46 @@ export default store;
 
 
 
+
+
+### 单文件的简单使用
+
+```js
+//redux
+import { createStore } from 'redux';
+
+const counterReducer = (state = { count: 0 }, action) => {
+  switch (action.type) {
+    case 'add':
+      return {
+        ...state,
+        count: state.count + 1
+      }
+    case 'sub':
+      return {
+        ...state,
+        count: state.count - 1
+      }
+    default:
+      return state
+  }
+}
+const add = {
+  type: 'add',
+}
+
+const store = createStore(counterReducer,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
+
+console.log(store.getState())
+store.dispatch(add)
+```
+
+
+
 ### 在react中使用
+
+具体的看demo1
 
 ```js
 import React from 'react'

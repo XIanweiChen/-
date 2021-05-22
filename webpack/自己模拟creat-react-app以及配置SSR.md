@@ -28,7 +28,7 @@ webpack 4+ 版本，你还需要安装 CLI：
 
 ### 3.创建初始文件
 
-index.html 和index.js（webpack默认，使用此名字可不用配置入口）
+src 目录下的index.html 和index.js（webpack默认，使用此名字可不用配置入口）
 **到此为止，可直接用npx webpack打包**:
 
 内容只为一行的`console.log('hello word')` 打包结果
@@ -150,6 +150,39 @@ tip：
 里面带s的都是数组，不带的是对象
 module：是第三方 模块的匹配规则
 
+⚠️常用：
+
+1. entry
+2. mode
+3. output
+4. module
+5. plugins
+
+```js
+const path = require('path');
+
+module.exports = {
+  entry: './path/to/my/entry/file.js',
+  mode: 'production'
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'my-first-webpack.bundle.js'
+  },
+  module: {
+    rules: [
+      { test: /\.txt$/, use: 'raw-loader' }
+    ]
+  },
+  plugins: [
+    new HtmlWebpackPlugin({template: './src/index.html'})
+  ]
+};
+```
+
+
+
+
+
 ### 5.使用插件：
 
 ##### html-webpack-plugin：
@@ -178,7 +211,7 @@ const htmlPlugin = new HtmlWebpackPlugin({
 
 
 
-##### clean-webpack-plugin ：
+##### clean-webpack-plugin 
 
 功能：
 
@@ -213,16 +246,24 @@ module.exports = webpackConfig;
 
 ##### webpack-dev-server：
 
+```bash
+npm i webpack-dev-server -D
+```
+
+
+
 功能：
 
 ​	用于开发，打开服务，热跟新
 
-配置:
+配置:  可不加
 
 ```js
-devServer: {   //devServer的根路径
-  contentBase: './dist'
-}
+  devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    compress: true,
+    port: 3000
+  }
 ```
 
 ##### react-hot-loader

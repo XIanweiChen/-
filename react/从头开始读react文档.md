@@ -187,7 +187,7 @@ React 元素的事件处理和 DOM 元素的很相似，但是有一点语法上
 #### **与运算符** **&&**
 
 ```javascript
-{unreadMessages.length > 0 &&<h2> You have {unreadMessages.length} unread messages.</h2>
+{unreadMessages.length > 0 && <h2> You have {unreadMessages.length} unread messages.</h2>
 }
 ```
 
